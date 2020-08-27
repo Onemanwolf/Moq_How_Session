@@ -20,23 +20,53 @@ Mock object gives us the ability to mimic the behavior of classes and interfaces
 
 ## Getting Started With Moq
 
-We use interfaces not implementations in best practice of Moq
+## Clone Code and Create Test Project
+
+1. Create folder Open Command Prompt and make dir Moq_How_Session.
+
+```console
+C:\Users\tioleson>md Moq_How_Session
+
+```
+
+2. Clone the repo from [Moq_How_Session](https://github.com/Onemanwolf/Moq_How_Session)
+
+3. Now that the solution is open we will add a xUnit Test project by right clicking the GameAccount Solution and select add New Project.
+
+4. In the Add a new project window type xUnit in the top search window
+   and then select xUnit Test Project .Net Core click Next button.
+
+5. In the configure your new project window type GameAccount.Tests in the Project name field.
 
 ## Install Moq
 
+First we need the NuGet Packages.
+
+You can add the packages to the project file by double clicking it and pasting in below into the Item Group and the save project file. The packages will be installed for you.
+
 ```XML
+
+<ItemGroup>
          <PackageReference Include="Moq" Version="4.13.1" />
          <PackageReference Include="FluentAssertions" Version="5.10.3" />
+
+
+</ItemGroup>
 ```
 
-First we need the Nuget Package.
+Or you can do it with the NuGet Package Manager
 
-1. Right click on the Test project and select Manage NuGet packages... then goto the Browse and paste or type in Moq.
+1. Right click on the Test project and select Manage NuGet packages... then goto the Browse testbox and paste or type in Moq.
 
 ```C#
        using Moq;
 ```
 
+2. Now lets add FluentAssertions NuGet package to the project
+
+```C#
+       using Moq;
+```
 
 ## Configure Mock Objects
 
@@ -65,7 +95,7 @@ OR
 3. Now we use the new mockValidator we created by passing it into the dependent object and we must use the Object `mockValidator.Object`
 
 4. Lets examine the Mock namespace by right click on on Mock
-in `Mock<IPremiumAccountValidator>()`
+   in `Mock<IPremiumAccountValidator>()`
 
 ```C#
 namespace Moq
@@ -79,7 +109,7 @@ namespace Moq
 
 ```
 
->Note: Examine on of the Methods and Properties like Setup, Raise,  SetupProperties.
+> Note: Examine on of the Methods and Properties like Setup, Raise, SetupProperties.
 
 4. Lets create our first test using a mock of the `PremiumAccountNumberValidatorService` which implements the `IPremiumAccountValidator`
 
@@ -97,44 +127,6 @@ namespace Moq
 
             Assert.Equal(PremiumAccountApplicationDecision.AutoAccepted, decision);
         };
-```
-
-## Strict And Loose
-
-Examples:
-`Mock<IInterface> mock = new Mock<IInterface>(MockBehavior.Loose);`
-`var mock = new Mock<IInterface>(MockBehavior.Strict);`
-
-- Loose Mock
-  - Fewer lines of setup code
-  - Setup only what is relevant
-  - Default values
-  - Less brittle
-- Strict Mock
-  - More lines of setup code
-  - May have to setup irrelevant items
-  - Have to setup each method call
-  - More brittle
-
-### Example of Strict:
-
-```C#
-
-public void AcceptHighAmountApplications(){
-
-           Mock<IPremiumAccountValidator> mockValidator = new Mock<IPremiumAccountValidator>(MockBehavior.Strict);
-
-            var sut = new GameAccountApplicationEvaluator(mockValidator.Object);
-
-
-
-            var application = new GameAccountApplication { Amount = 100_000 };
-
-            PremiumAccountApplicationDecision decision = sut.Evaluate(application);
-
-            Assert.Equal(PremiumAccountApplicationDecision.AutoAccepted, decision);
-        }
-
 ```
 
 # Configure Mock Methods
@@ -223,6 +215,7 @@ public void AcceptHighAmountApplications(){
 
         }
 ```
+
 If you test does not require a specific value you can use the `IsAny<string>()` method in place of the literal value as shown below.
 
 ```C#
@@ -255,7 +248,9 @@ If you test does not require a specific value you can use the `IsAny<string>()` 
 
         }
 ```
+
 We can using predicate which returns a boolean result with a lambda function `It.Is<string>(number => number.StartsWith("y")))).Returns(true);` to see if the value begins with `y`
+
 ```C#
         [Fact]
         public void DeclineLowAmountApplications()
@@ -294,7 +289,6 @@ We can using predicate which returns a boolean result with a lambda function `It
         }
 ```
 
-
 We can also check if a value is within a specific range by passing in the `It.IsInRange<string>("a", "z", Moq.Range.Inclusive))`
 
 ```C#
@@ -331,6 +325,7 @@ We can also check if a value is within a specific range by passing in the `It.Is
 
         }
 ```
+
 We can also check to see if value is in within a set by using `It.IsIn<string>("a", "z", "y")`
 
 ```C#
@@ -372,6 +367,8 @@ We can also check to see if value is in within a set by using `It.IsIn<string>("
         }
 ```
 
+If you can use Regex pattern matching by using the `It.IsRegex("[a-z]")`
+
 ```C#
         [Fact]
         public void DeclineLowAmountApplications()
@@ -387,6 +384,8 @@ We can also check to see if value is in within a set by using `It.IsIn<string>("
             //Is In set of values passed in
             //mockValidator.Setup(x => x.IsValid(It.IsIn<string>("a", "z", "y"))).Returns(true);
 
+
+            //Use Regex by employing the It.IsRegex() Method
             mockValidator.Setup(x => x.IsValid(It.IsRegex("[a-z]"))).Returns(true);
 
 
@@ -409,9 +408,40 @@ We can also check to see if value is in within a set by using `It.IsIn<string>("
         }
 ```
 
+## Strict And Loose
+
+- MockBehavior.Strict
+  - Throws an excepton if a mock method is called but not been setup
+- MockBehavior.Loose
+  - Never throw exception, even if a mocked method is called but has not been setup
+  - Returns default values for types, null for reference types, empty array/enumerable
+- MockBehavior.Default
+  - Default behavior if none specified then Loose is what you get
+
+Examples:
+
+`Mock<IInterface> mock = new Mock<IInterface>(MockBehavior.Loose);`
+
+`var mock = new Mock<IInterface>(MockBehavior.Strict);`
+
+- Loose Mock
+
+  - Fewer lines of setup code
+  - Setup only what is relevant
+  - Default values
+  - Less brittle
+
+- Strict Mock
+  - More lines of setup code
+  - May have to setup irrelevant items
+  - Have to setup each method call
+  - More brittle
+
+### Example of Strict:
+
 ```C#
         [Fact]
-        public void ReferInvalidPremiumAccountApplicaitons()
+        public void ReferInvalidPremiumAccountApplicaitons(MockBehavior.Strict)
         {
             var mockValidator = new Mock<IPremiumAccountValidator>();
 
@@ -425,6 +455,8 @@ We can also check to see if value is in within a set by using `It.IsIn<string>("
 
         }
 ```
+
+We can use the out parameter to test methods that implement the out parameter as demostrated below
 
 ```C#
         [Fact]
@@ -450,6 +482,32 @@ We can also check to see if value is in within a set by using `It.IsIn<string>("
         }
 ```
 
+We can also use ref parameter with the `It.Ref<Person>.IsAny`
+
+Example:
+
+> Note just an example no code for example challenge write code to make test pass.
+
+```C#
+var person1 = new Person();
+var person1 = new Person();
+
+var mock = new Mock<ICreatePersonCommand>();
+
+mock.Setup(x => x.Execute(ref It.Ref<Person>.IsAny)).Return(-1);
+
+var sut =  new Processor(mock.Object);
+sut.Process(person1);
+sut.Process(person2);
+
+
+
+```
+
+## Configuring Properties
+
+When we are dealing with Properties 
+
 ```C#
         [Fact]
         public void ReferWhenLicenseKeyExpired()
@@ -458,6 +516,8 @@ We can also check to see if value is in within a set by using `It.IsIn<string>("
             var mockValidator = new Mock<IPremiumAccountValidator>();
 
             mockValidator.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
+
+            //Setup the property
             mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("EXPIRED");
 
             var sut = new GameAccountApplicationEvaluator(mockValidator.Object);
