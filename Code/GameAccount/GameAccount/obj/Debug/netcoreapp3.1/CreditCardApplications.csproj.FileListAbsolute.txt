@@ -1,0 +1,9 @@
+C:\Mock\03\demos\before\02FirstMock\CreditCardApplications\bin\Debug\netcoreapp3.1\CreditCardApplications.deps.json
+C:\Mock\03\demos\before\02FirstMock\CreditCardApplications\bin\Debug\netcoreapp3.1\CreditCardApplications.dll
+C:\Mock\03\demos\before\02FirstMock\CreditCardApplications\bin\Debug\netcoreapp3.1\CreditCardApplications.pdb
+C:\Mock\03\demos\before\02FirstMock\CreditCardApplications\obj\Debug\netcoreapp3.1\CreditCardApplications.AssemblyInfoInputs.cache
+C:\Mock\03\demos\before\02FirstMock\CreditCardApplications\obj\Debug\netcoreapp3.1\CreditCardApplications.AssemblyInfo.cs
+C:\Mock\03\demos\before\02FirstMock\CreditCardApplications\obj\Debug\netcoreapp3.1\CreditCardApplications.csproj.CoreCompileInputs.cache
+C:\Mock\03\demos\before\02FirstMock\CreditCardApplications\obj\Debug\netcoreapp3.1\CreditCardApplications.dll
+C:\Mock\03\demos\before\02FirstMock\CreditCardApplications\obj\Debug\netcoreapp3.1\CreditCardApplications.pdb
+C:\Mock\03\demos\before\02FirstMock\CreditCardApplications\obj\Debug\netcoreapp3.1\CreditCardApplications.csprojAssemblyReference.cache
