@@ -111,24 +111,29 @@ namespace Moq
 
 > Note: Examine on of the Methods and Properties like Setup, Raise, SetupProperties.
 
-4. Lets create our first test using a mock of the `PremiumAccountNumberValidatorService` which implements the `IPremiumAccountValidator` create the `mockValidator` then the system under test `sut` now pass in the `mockValidator`
+4. Lets create our first test using a mock of the `PremiumAccountNumberValidatorService` which implements the `IPremiumAccountValidator` create the `mockValidator`
 
-5. Now we add a `application` of the type `GameAccountApplication` and assign the Amount property to `100_000` to pass to the `sut.Evaluate(application)` method.
+5. then the system under test `sut` now pass in the `mockValidator`
 
-6. Next we need a `decision` of the type `PremiumAccountApplicationDecision`
+6. Now we add a `application` of the type `GameAccountApplication` and assign the Amount property to `100_000` to pass to the `sut.Evaluate(application)` method.
+
+7. Next we need a `decision` of the type enum `PremiumAccountApplicationDecision`
+
+8. last we will Assert that the decision is `PremiumAccountApplicationDecision.AutoAccepted`.
 
 ```C#
        [Fact]
         public void AcceptHighIncomeApplications(){
 
+            //4
             var mockValidator = new Mock<IPremiumAccountValidator>();
-
+            //5
             var sut = new GameAccountApplicationEvaluator(mockValidator.Object);
-
+            //6
             var application = new GameAccountApplication { Amount = 100_000 };
-
+            //7
             PremiumAccountApplicationDecision decision = sut.Evaluate(application);
-
+            //8
             Assert.Equal(PremiumAccountApplicationDecision.AutoAccepted, decision);
         };
 ```
@@ -141,7 +146,10 @@ We can setup our mock methods and use the Return method to inform the test what 
 
 1. Lets add a test method to Refer Young Applications and call it `ReferYoungApplications`.
 
+2. We will follow the step of Arrange Act Assert as we did in the in our first test method example.
 
+3. We will set up the property first more this later and then we wil add the focus on the method we do this with the mock `Setup()` method
+   and we do this with a lambda delegate function passing in the value of `"x"`
 
 ```C#
         [Fact]
@@ -153,7 +161,7 @@ We can setup our mock methods and use the Return method to inform the test what 
             mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("OK");
 
             //Setup IsValid method
-            mockValidator.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
+            mockValidator.Setup(x => x.IsValid("x")).Returns(true);
 
             var sut = new GameAccountApplicationEvaluator(mockValidator.Object);
 
@@ -166,6 +174,8 @@ We can setup our mock methods and use the Return method to inform the test what 
 ```
 
 ## Arguement Matching
+
+We can pass in liter value to our mock setup methods lambdas which can make our test brittle.
 
 ```C#
         [Fact]
@@ -487,7 +497,7 @@ sut.Process(person2);
 
 # Configuring Properties
 
-When we are dealing with Properties we can set them up like we do Methods to include Object Hierarchies. By using the `Returns()`
+When we are dealing with Properties we can set them up like we do with Methods to include Object Hierarchies. By using the `Returns()`
 
 ```C#
         [Fact]
@@ -537,8 +547,7 @@ We can also use methods to assign return values in our setup.
 
             mockValidator.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
 
-            //Examine Code IPremiumAccountValidator
-
+             //2
             //Setup the property
             mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns(GetLicenseKeyExpired);
 
@@ -588,24 +597,20 @@ If you find that after adding a new property system under test and it breaks oth
 
 ## Can't Member or Remember?
 
-Mock objects do not remember changes made to them by default so you need to use the SetupProperty(x => x.PropertyToBeRemembered) method to ensure changes made at test run time are remembered or SetupAllProperties() method
+To demonstrate this lets create a new Test Method and observe what happens.
 
 ```C#
         [Fact]
-        public void UseDetailedLookupForOlderApplications()
+        public void UseDetailedLookupForYoungApplications()
         {
             var mockValidator = new Mock<IPremiumAccountValidator>();
 
-            //ensure you place this SetupProperties before your setup code to avoid overriding you setup with default values
-            mockValidator.SetupProperty(x => x.ValidationMode);
-            mockValidator.SetupAllProperties();
 
-            //Setup code
             mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("OK");
 
 
             var sut = new GameAccountApplicationEvaluator(mockValidator.Object);
-            var application = new GameAccountApplication { Age = 30 };
+            var application = new GameAccountApplication { Age = 17 };
             sut.Evaluate(application);
 
             mockValidator.Object.ValidationMode.Should().Be(ValidationMode.Detailed);
@@ -613,6 +618,64 @@ Mock objects do not remember changes made to them by default so you need to use 
         }
 
 ```
+
+
+Mock objects do not remember changes made to them by default so you need to use the `SetupProperty(x => x.PropertyToBeRemembered)` method.
+
+Lets add a the `SetupProperty` to our test method to get it to pass.
+
+```C#
+        [Fact]
+        public void UseDetailedLookupForYoungApplications()
+        {
+            var mockValidator = new Mock<IPremiumAccountValidator>();
+
+            //ensure you place this SetupProperties before your setup code to avoid overriding you setup with default values
+            mockValidator.SetupProperty(x => x.ValidationMode);
+
+
+            //Setup code
+            mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("OK");
+
+
+            var sut = new GameAccountApplicationEvaluator(mockValidator.Object);
+            var application = new GameAccountApplication { Age = 17 };
+            sut.Evaluate(application);
+
+            mockValidator.Object.ValidationMode.Should().Be(ValidationMode.Detailed);
+
+        }
+
+```
+
+2. Or we can use the  `SetupAllProperties()` method to set all properties if no specific values are required.
+
+```C#
+        [Fact]
+        public void UseDetailedLookupForYoungApplications()
+        {
+            var mockValidator = new Mock<IPremiumAccountValidator>();
+
+            //ensure you place this SetupProperties before your setup code to avoid overriding you setup with default values
+
+            //
+            mockValidator.SetupAllProperties();
+
+            //Setup code
+            mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("OK");
+
+
+            var sut = new GameAccountApplicationEvaluator(mockValidator.Object);
+            var application = new GameAccountApplication { Age = 17 };
+            sut.Evaluate(application);
+
+            mockValidator.Object.ValidationMode.Should().Be(ValidationMode.Detailed);
+
+        }
+
+```
+
+## Mock method call Test
 
 ```C#
         [Fact]
