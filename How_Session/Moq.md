@@ -56,7 +56,7 @@ You can add the packages to the project file by double clicking it and pasting i
 
 Or you can do it with the NuGet Package Manager
 
-1. Right click on the Test project and select Manage NuGet packages... then goto the Browse testbox and paste or type in Moq.
+1. Right click on the Test project and select Manage NuGet packages... then goto the Browse textbox and paste or type in Moq.
 
 ```C#
        using Moq;
@@ -111,7 +111,11 @@ namespace Moq
 
 > Note: Examine on of the Methods and Properties like Setup, Raise, SetupProperties.
 
-4. Lets create our first test using a mock of the `PremiumAccountNumberValidatorService` which implements the `IPremiumAccountValidator`
+4. Lets create our first test using a mock of the `PremiumAccountNumberValidatorService` which implements the `IPremiumAccountValidator` create the `mockValidator` then the system under test `sut` now pass in the `mockValidator`
+
+5. Now we add a `application` of the type `GameAccountApplication` and assign the Amount property to `100_000` to pass to the `sut.Evaluate(application)` method.
+
+6. Next we need a `decision` of the type `PremiumAccountApplicationDecision`
 
 ```C#
        [Fact]
@@ -133,30 +137,11 @@ namespace Moq
 
 ## Setup Methods to Return Specific Values
 
-```C#
-        [Fact]
-        public void ReferYoungApplications(){
+We can setup our mock methods and use the Return method to inform the test what you expect returned from the method call
+
+1. Lets add a test method to Refer Young Applications and call it `ReferYoungApplications`.
 
 
-            var mockValidator = new Mock<IPremiumAccountValidator>();
-
-            mockValidator.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
-
-            var sut = new GameAccountApplicationEvaluator(mockValidator.Object);
-
-            var application = new GameAccountApplication { Age = 17 };
-
-            PremiumAccountApplicationDecision decision = sut.Evaluate(application);
-
-            Assert.Equal(PremiumAccountApplicationDecision.ReferredToHuman, decision);
-        }
-```
-
-## Avoid Null Reference
-
-1. A way to avoid Null Reference is to use the `DefaultValue.Mock` by setting the Mock DefaultValue property ` mockValidator.DefaultValue = DefaultValue.Mock;`.
-
-2. Alternatively we can just set up Propert with the Setup Mock `Setup()` Method.
 
 ```C#
         [Fact]
@@ -165,11 +150,9 @@ namespace Moq
 
             var mockValidator = new Mock<IPremiumAccountValidator>();
 
-            // Avoid Null Reference with DefaultValue
-            mockValidator.DefaultValue = DefaultValue.Mock;
+            mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("OK");
 
-            //Or you can set up  property to avoid null reference execption
-          //  mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("OK");
+            //Setup IsValid method
             mockValidator.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
 
             var sut = new GameAccountApplicationEvaluator(mockValidator.Object);
@@ -411,7 +394,7 @@ If you can use Regex pattern matching by using the `It.IsRegex("[a-z]")`
 ## Strict And Loose
 
 - MockBehavior.Strict
-  - Throws an excepton if a mock method is called but not been setup
+  - Throws an exception if a mock method is called but not been setup
 - MockBehavior.Loose
   - Never throw exception, even if a mocked method is called but has not been setup
   - Returns default values for types, null for reference types, empty array/enumerable
@@ -456,7 +439,7 @@ Examples:
         }
 ```
 
-We can use the out parameter to test methods that implement the out parameter as demostrated below
+We can use the out parameter to test methods that implement the out parameter as demonstrated below
 
 ```C#
         [Fact]
@@ -500,13 +483,11 @@ var sut =  new Processor(mock.Object);
 sut.Process(person1);
 sut.Process(person2);
 
-
-
 ```
 
-## Configuring Properties
+# Configuring Properties
 
-When we are dealing with Properties 
+When we are dealing with Properties we can set them up like we do Methods to include Object Hierarchies. By using the `Returns()`
 
 ```C#
         [Fact]
@@ -517,6 +498,8 @@ When we are dealing with Properties
 
             mockValidator.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
 
+            //Examine Code IPremiumAccountValidator
+
             //Setup the property
             mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("EXPIRED");
 
@@ -526,13 +509,86 @@ When we are dealing with Properties
 
             decision.Should().Be(PremiumAccountApplicationDecision.ReferredToHuman);
 
-
         }
 ```
 
+## Method for Return Values
+
+We can also use methods to assign return values in our setup.
+
+1. Lets add a method to get `"EXPIRED"` value at the bottom of the test class.
+
+```C#
+        public string GetLicenseKeyExpired()
+        {
+            return "EXPIRED";
+        }
+
+```
+
+2. Now lets replace the literal value of `EXPIRED` with the Method call ` mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns(GetLicenseKeyExpired);`
+
+```C#
+        [Fact]
+        public void ReferWhenLicenseKeyExpired()
+        {
+
+            var mockValidator = new Mock<IPremiumAccountValidator>();
+
+            mockValidator.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
+
+            //Examine Code IPremiumAccountValidator
+
+            //Setup the property
+            mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns(GetLicenseKeyExpired);
+
+            var sut = new GameAccountApplicationEvaluator(mockValidator.Object);
+            var application = new GameAccountApplication() { Age = 42 };
+            PremiumAccountApplicationDecision decision = sut.Evaluate(application);
+
+            decision.Should().Be(PremiumAccountApplicationDecision.ReferredToHuman);
+        }
+```
+
+## Avoid Null Reference
+
+If you find that after adding a new property system under test and it breaks other test due to null reference exception you can add `mockValidator.DefaultValue = DefaultValue.Mock;` to provide the default values of the those property types.
+
+1. A way to avoid Null Reference is to use the `DefaultValue.Mock` by setting the Mock DefaultValue property ` mockValidator.DefaultValue = DefaultValue.Mock;`.
+
+2. Alternatively we can just set up Properties with the Setup Mock `Setup()` Method.
+
+3. Lets Comment out the `mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("OK");` method and Add the DefaultValue.
+
+```C#
+        [Fact]
+        public void ReferYoungApplications(){
+
+
+            var mockValidator = new Mock<IPremiumAccountValidator>();
+
+            // Avoid Null Reference with DefaultValue
+            mockValidator.DefaultValue = DefaultValue.Mock;
+
+            //Comment out this line to demonstrate
+           // mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("OK");
+            mockValidator.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
+
+            var sut = new GameAccountApplicationEvaluator(mockValidator.Object);
+
+            var application = new GameAccountApplication { Age = 17 };
+
+            PremiumAccountApplicationDecision decision = sut.Evaluate(application);
+
+            Assert.Equal(PremiumAccountApplicationDecision.ReferredToHuman, decision);
+        }
+```
+
+> Note the Method does not get called until the value is accessed this can be observed by debugging the test and placing a break point in the Method and seeing when it is actually called.
+
 ## Can't Member or Remember?
 
-Mock objects do not rememeber changes made to them by default so you need to use the SetupProperty(x => x.PropertyToBeRemembered) method to ensure changes made at test run time are remembered or SetupAllProperties() method
+Mock objects do not remember changes made to them by default so you need to use the SetupProperty(x => x.PropertyToBeRemembered) method to ensure changes made at test run time are remembered or SetupAllProperties() method
 
 ```C#
         [Fact]
