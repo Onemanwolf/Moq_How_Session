@@ -559,6 +559,10 @@ We can also use methods to assign return values in our setup.
         }
 ```
 
+> Note the Method does not get called until the value is accessed this can be observed by debugging the test and placing a break point in the Method and seeing when it is actually called.
+
+
+
 ## Avoid Null Reference
 
 If you find that after adding a new property system under test and it breaks other test due to null reference exception you can add `mockValidator.DefaultValue = DefaultValue.Mock;` to provide the default values of the those property types.
@@ -593,9 +597,12 @@ If you find that after adding a new property system under test and it breaks oth
         }
 ```
 
-> Note the Method does not get called until the value is accessed this can be observed by debugging the test and placing a break point in the Method and seeing when it is actually called.
+
 
 ## Can't Member or Remember?
+
+Mock objects do not remember changes made to them by default.
+
 
 To demonstrate this lets create a new Test Method and observe what happens.
 
@@ -620,7 +627,7 @@ To demonstrate this lets create a new Test Method and observe what happens.
 ```
 
 
-Mock objects do not remember changes made to them by default so you need to use the `SetupProperty(x => x.PropertyToBeRemembered)` method.
+As we discussed Mock objects do not remember changes made to them by default so you need to use the `SetupProperty(x => x.PropertyToBeRemembered)` method so we can ensure that the mock remembers.
 
 Lets add a the `SetupProperty` to our test method to get it to pass.
 
@@ -674,6 +681,9 @@ Lets add a the `SetupProperty` to our test method to get it to pass.
         }
 
 ```
+
+>Note ensure you place this SetupProperties before your setup code to avoid overriding you setup with default values
+
 
 ## Mock method call Test
 
