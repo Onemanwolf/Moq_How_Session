@@ -434,9 +434,9 @@ Examples:
 
 ```C#
         [Fact]
-        public void ReferInvalidPremiumAccountApplicaitons(MockBehavior.Strict)
+        public void ReferInvalidPremiumAccountApplicaitons()
         {
-            var mockValidator = new Mock<IPremiumAccountValidator>();
+            var mockValidator = new Mock<IPremiumAccountValidator>(MockBehavior.Strict);
 
             mockValidator.Setup(x => x.IsValid(It.IsAny<string>())).Returns(false);
             mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("OK");

@@ -8,6 +8,8 @@
         private const decimal HighIncomeThreshold = 100;
         private const decimal LowIncomeThreshold = 20_00;
 
+
+        //We will mock IPremiumAccountValidator
         public GameAccountApplicationEvaluator(IPremiumAccountValidator validator)
         {
             _validator = validator;
