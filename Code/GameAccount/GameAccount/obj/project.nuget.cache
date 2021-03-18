@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "uifbnTiavRJlldIm5Zu2xMnmyJqq+gJ8juoWtf4WwE/Eg0rgT2UIrIL4avbAd0geC69/er7sBqNQtu4J+IRjWA==",
+  "dgSpecHash": "e01kfBjUloPL2tlc5UbmiNUrPZA23Qvj1Y5izRY5bdxfR4JyQA0eSalswtB4plokPD13Ri8Bhwj9H1n69v86Bg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\tioleson\\source\\repos\\Moq_How_Session\\Code\\GameAccount\\GameAccount\\PremiumAccountApplications.csproj",
+  "projectFilePath": "C:\\Moq_how_Session_Metro\\Moq_How_Session\\Code\\GameAccount\\GameAccount\\PremiumAccountApplications.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

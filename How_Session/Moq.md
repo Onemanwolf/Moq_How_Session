@@ -47,7 +47,7 @@ You can add the packages to the project file by double clicking it and pasting i
 ```XML
 
 <ItemGroup>
-         <PackageReference Include="Moq" Version="4.13.1" />
+         <PackageReference Include="Moq" Version="4.16.1" />
          <PackageReference Include="FluentAssertions" Version="5.10.3" />
 
 

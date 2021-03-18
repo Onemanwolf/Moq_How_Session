@@ -16,3 +16,12 @@ C:\Users\tioleson\source\repos\Moq_How_Session\Code\GameAccount\GameAccount\obj\
 C:\Users\tioleson\source\repos\Moq_How_Session\Code\GameAccount\GameAccount\obj\Debug\netcoreapp3.1\PremiumAccountApplications.csproj.CoreCompileInputs.cache
 C:\Users\tioleson\source\repos\Moq_How_Session\Code\GameAccount\GameAccount\obj\Debug\netcoreapp3.1\PremiumAccountApplications.dll
 C:\Users\tioleson\source\repos\Moq_How_Session\Code\GameAccount\GameAccount\obj\Debug\netcoreapp3.1\PremiumAccountApplications.pdb
+C:\Moq_how_Session_Metro\Moq_How_Session\Code\GameAccount\GameAccount\bin\Debug\netcoreapp3.1\PremiumAccountApplications.deps.json
+C:\Moq_how_Session_Metro\Moq_How_Session\Code\GameAccount\GameAccount\bin\Debug\netcoreapp3.1\PremiumAccountApplications.dll
+C:\Moq_how_Session_Metro\Moq_How_Session\Code\GameAccount\GameAccount\bin\Debug\netcoreapp3.1\PremiumAccountApplications.pdb
+C:\Moq_how_Session_Metro\Moq_How_Session\Code\GameAccount\GameAccount\obj\Debug\netcoreapp3.1\PremiumAccountApplications.csprojAssemblyReference.cache
+C:\Moq_how_Session_Metro\Moq_How_Session\Code\GameAccount\GameAccount\obj\Debug\netcoreapp3.1\PremiumAccountApplications.AssemblyInfoInputs.cache
+C:\Moq_how_Session_Metro\Moq_How_Session\Code\GameAccount\GameAccount\obj\Debug\netcoreapp3.1\PremiumAccountApplications.AssemblyInfo.cs
+C:\Moq_how_Session_Metro\Moq_How_Session\Code\GameAccount\GameAccount\obj\Debug\netcoreapp3.1\PremiumAccountApplications.csproj.CoreCompileInputs.cache
+C:\Moq_how_Session_Metro\Moq_How_Session\Code\GameAccount\GameAccount\obj\Debug\netcoreapp3.1\PremiumAccountApplications.dll
+C:\Moq_how_Session_Metro\Moq_How_Session\Code\GameAccount\GameAccount\obj\Debug\netcoreapp3.1\PremiumAccountApplications.pdb
